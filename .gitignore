@@ -1,0 +1,5 @@
+# Project specific
+kpu-web-parser/cache/dl-*
+
+# PyCharm IDE
+.idea/
