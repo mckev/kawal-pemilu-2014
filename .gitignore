@@ -1,5 +1,6 @@
 # Project specific
 kpu-web-parser/cache/dl-*
+kpu-web-parser/test/classes/cache/dl-*
 
 # PyCharm IDE
 .idea/
