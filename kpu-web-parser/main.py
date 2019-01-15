@@ -1,5 +1,3 @@
-from classes.browser import Browser
+from classes.kpu_c1 import KpuC1
 
-url = 'https://pilpres2014.kpu.go.id/c1.php'
-content = Browser.browse_url(url)
-print(content)
+KpuC1.browse_c1_page(url="https://pilpres2014.kpu.go.id/c1.php")
