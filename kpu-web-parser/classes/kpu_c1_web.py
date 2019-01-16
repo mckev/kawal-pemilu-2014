@@ -5,11 +5,12 @@ import requests_html
 from classes.browser import Browser
 
 
-class KpuC1:
+class KpuC1Web:
+
     @staticmethod
-    def parse_c1_page(content):
+    def parse_c1_html(content):
         """
-        Parse a C1 page
+        Parse KPU C1 HTML page
         Arguments:
             content: HTML string
         Output:
@@ -71,11 +72,12 @@ class KpuC1:
         return administrative_type, administratives
 
     @staticmethod
-    def browse_c1_page(url):
+    def browse_c1_web(url):
+        """ Browse KPU C1 website recursively """
         content = Browser.browse_url(url)
-        administrative_type, administratives = KpuC1.parse_c1_page(content)
+        administrative_type, administratives = KpuC1Web.parse_c1_html(content)
         for administrative in administratives:
             url = administrative['url']
             print('Browsing {} {} - id {}, parent_id {}'.format(administrative_type, administrative['name'],
                                                                 administrative['id'], administrative['parent_id']))
-            KpuC1.browse_c1_page(url)
+            KpuC1Web.browse_c1_web(url)

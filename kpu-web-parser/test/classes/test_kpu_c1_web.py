@@ -1,15 +1,15 @@
 import unittest
 
 from classes.browser import Browser
-from classes.kpu_c1 import KpuC1
+from classes.kpu_c1_web import KpuC1Web
 
 
-class TestKpuC1(unittest.TestCase):
+class TestKpuC1Web(unittest.TestCase):
 
-    def test_parse_c1_page_main(self):
+    def test_parse_c1_html_main(self):
         # Main page
         content = Browser.browse_url('https://pilpres2014.kpu.go.id/c1.php')
-        administrative_type, administratives = KpuC1.parse_c1_page(content)
+        administrative_type, administratives = KpuC1Web.parse_c1_html(content)
         self.assertEqual(administrative_type, 'Provinsi')
         expected_administratives = [
             {'name': 'ACEH', 'id': 1, 'parent_id': 0,
@@ -81,10 +81,10 @@ class TestKpuC1(unittest.TestCase):
         ]
         self.assertEqual(administratives, expected_administratives)
 
-    def test_parse_c1_page_provinsi(self):
+    def test_parse_c1_html_provinsi(self):
         # Provinsi 'SUMATERA UTARA' page
         content = Browser.browse_url('https://pilpres2014.kpu.go.id/c1.php?cmd=select&grandparent=0&parent=6728')
-        administrative_type, administratives = KpuC1.parse_c1_page(content)
+        administrative_type, administratives = KpuC1Web.parse_c1_html(content)
         self.assertEqual(administrative_type, 'Kabupaten/Kota')
         expected_administratives = [
             {'name': 'TAPANULI TENGAH', 'id': 7240, 'parent_id': 6728,
@@ -156,10 +156,10 @@ class TestKpuC1(unittest.TestCase):
         ]
         self.assertEqual(administratives, expected_administratives)
 
-    def test_parse_c1_page_kabupaten(self):
+    def test_parse_c1_html_kabupaten(self):
         # Kabupaten/Kota 'TAPANULI UTARA' page
         content = Browser.browse_url('https://pilpres2014.kpu.go.id/c1.php?cmd=select&grandparent=6728&parent=7438')
-        administrative_type, administratives = KpuC1.parse_c1_page(content)
+        administrative_type, administratives = KpuC1Web.parse_c1_html(content)
         self.assertEqual(administrative_type, 'Kecamatan')
         expected_administratives = [
             {'name': 'TARUTUNG', 'id': 7439, 'parent_id': 7438,
@@ -195,10 +195,10 @@ class TestKpuC1(unittest.TestCase):
         ]
         self.assertEqual(administratives, expected_administratives)
 
-    def test_parse_c1_page_kecamatan(self):
+    def test_parse_c1_html_kecamatan(self):
         # Kecamatan 'TARUTUNG' page
         content = Browser.browse_url('https://pilpres2014.kpu.go.id/c1.php?cmd=select&grandparent=7438&parent=7439')
-        administrative_type, administratives = KpuC1.parse_c1_page(content)
+        administrative_type, administratives = KpuC1Web.parse_c1_html(content)
         self.assertEqual(administrative_type, 'Kelurahan/Desa')
         expected_administratives = [
             {'name': 'PARTALI TORUAN', 'id': 7440, 'parent_id': 7439,
@@ -266,9 +266,9 @@ class TestKpuC1(unittest.TestCase):
         ]
         self.assertEqual(administratives, expected_administratives)
 
-    def test_parse_c1_page_kelurahan(self):
+    def test_parse_c1_html_kelurahan(self):
         # Kelurahan/Desa 'PARTALI TORUAN' page
         content = Browser.browse_url('https://pilpres2014.kpu.go.id/c1.php?cmd=select&grandparent=7439&parent=7440')
-        administrative_type, administratives = KpuC1.parse_c1_page(content)
+        administrative_type, administratives = KpuC1Web.parse_c1_html(content)
         self.assertEqual(administrative_type, None)
         self.assertEqual(administratives, [])

@@ -1,3 +1,3 @@
-from classes.kpu_c1 import KpuC1
+from classes.kpu_c1_web import KpuC1Web
 
-KpuC1.browse_c1_page(url="https://pilpres2014.kpu.go.id/c1.php")
+KpuC1Web.browse_c1_web(url="https://pilpres2014.kpu.go.id/c1.php")
