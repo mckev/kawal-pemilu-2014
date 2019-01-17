@@ -72,12 +72,47 @@ class KpuC1Web:
         return administrative_type, administratives
 
     @staticmethod
+    def parse_election_site_results(content):
+        """
+        Parse KPU C1 HTML page for scanned pages of election results
+        Arguments:
+            content: HTML string
+        Output:
+            jpg_urls: List of URLs which are the scanned pages of election results
+        """
+        jpg_urls = []
+
+        # On Kelurahan/Desa "PARTALI TORUAN": There is links for scanned pages such as: <a href="javascript:read_jpg('000744000101')" class="image1_aktif" >
+        # When clicking this image, it will download: http://scanc1.kpu.go.id/viewp.php?f=000744000101.jpg
+        html = requests_html.HTML(html=content)
+        html_a_hrefs = html.find(selector='a.image1_aktif')
+        for html_a_href in html_a_hrefs:
+            assert html_a_href.attrs['class'] == ('image1_aktif',)
+            href = html_a_href.attrs['href']
+            matches = re.match(r'^javascript:read_jpg\(\'(\d+)\'\)$', href)
+            if matches:
+                # Example of jpg_id: '000000400101'
+                jpg_id = matches.group(1)
+                # We're only interested in page 04
+                if jpg_id.endswith('04'):
+                    jpg_urls.append('http://scanc1.kpu.go.id/viewp.php?f=' + jpg_id + '.jpg')
+        return jpg_urls
+
+    @staticmethod
     def browse_c1_web(url):
         """ Browse KPU C1 website recursively """
         content = Browser.browse_url(url)
         administrative_type, administratives = KpuC1Web.parse_c1_html(content)
-        for administrative in administratives:
-            url = administrative['url']
-            print('Browsing {} {} - id {}, parent_id {}'.format(administrative_type, administrative['name'],
-                                                                administrative['id'], administrative['parent_id']))
-            KpuC1Web.browse_c1_web(url)
+
+        if administrative_type is None:
+            # We're most likely on Kelurahan/Desa page
+            jpg_urls = KpuC1Web.parse_election_site_results(content)
+            for jpg_url in jpg_urls:
+                print('Downloading {}'.format(jpg_url))
+                Browser.download_file(jpg_url)
+        else:
+            for administrative in administratives:
+                url = administrative['url']
+                print('Browsing {} {} - id {}, parent_id {}'.format(administrative_type, administrative['name'],
+                                                                    administrative['id'], administrative['parent_id']))
+                KpuC1Web.browse_c1_web(url)

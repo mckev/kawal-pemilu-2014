@@ -272,3 +272,14 @@ class TestKpuC1Web(unittest.TestCase):
         administrative_type, administratives = KpuC1Web.parse_c1_html(content)
         self.assertEqual(administrative_type, None)
         self.assertEqual(administratives, [])
+
+    def test_parse_election_site_results(self):
+        # Kelurahan/Desa 'PARTALI TORUAN' page
+        content = Browser.browse_url('https://pilpres2014.kpu.go.id/c1.php?cmd=select&grandparent=7439&parent=7440')
+        jpg_ids = KpuC1Web.parse_election_site_results(content)
+        self.assertEqual(jpg_ids, ['http://scanc1.kpu.go.id/viewp.php?f=000744000104.jpg',
+                                   'http://scanc1.kpu.go.id/viewp.php?f=000744000204.jpg',
+                                   'http://scanc1.kpu.go.id/viewp.php?f=000744000304.jpg',
+                                   'http://scanc1.kpu.go.id/viewp.php?f=000744000404.jpg',
+                                   'http://scanc1.kpu.go.id/viewp.php?f=000744000504.jpg',
+                                   'http://scanc1.kpu.go.id/viewp.php?f=000744000604.jpg'])
